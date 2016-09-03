@@ -3,7 +3,7 @@
 # @Author: Comzyh
 # @Date:   2015-06-09 01:00:47
 # @Last Modified by:   Comzyh
-# @Last Modified time: 2016-04-03 18:26:43
+# @Last Modified time: 2016-09-03 16:48:38
 
 import re
 import json
@@ -109,21 +109,21 @@ def scan(pool, ip_list):
     return result
 
 
-def report(scan_result):
-    data = {
-        'type': 'report',
-        'reporter': config['reporter_id'],
-        'data': scan_result
-    }
-    json_str = json.dumps(data)
-    logging.info(json_str)
-    for url in config['report_url']:
-        try:
-            resp = requests.post(url, data=json_str, timeout=10)
-            logging.info(resp)
-            logging.info(resp.text)
-        except Exception:
-            logging.exception("Report Failed")
+# def report(scan_result):
+#     data = {
+#         'type': 'report',
+#         'reporter': config['reporter_id'],
+#         'data': scan_result
+#     }
+#     json_str = json.dumps(data)
+#     logging.info(json_str)
+#     for url in config['report_url']:
+#         try:
+#             resp = requests.post(url, data=json_str, timeout=10)
+#             logging.info(resp)
+#             logging.info(resp.text)
+#         except Exception:
+#             logging.exception("Report Failed")
 
 
 def main():
@@ -148,7 +148,7 @@ def main():
         new_set = set([(ip, mac)for ip, mac, rtt in scan_result])
         if (new_set != last_data['last_set'] or
                 time.time() - last_data['last_report'] > config['max_report_interval']):
-            report(scan_result)
+            # report(scan_result)
             last_data['last_set'] = new_set
             last_data['last_report'] = time.time()
         sch.enter(config['scan_interval'], 1, scan_warp, ())
