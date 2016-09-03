@@ -3,7 +3,7 @@
 # @Author: Comzyh
 # @Date:   2015-06-09 01:00:47
 # @Last Modified by:   Comzyh
-# @Last Modified time: 2016-09-03 16:48:38
+# @Last Modified time: 2016-09-03 17:23:12
 
 import re
 import json
@@ -16,6 +16,7 @@ import os
 import multiprocessing.pool
 import logging
 import sys
+import sqlite3
 
 config = {
     'ip_range': '192.168.8.2-254',
@@ -141,6 +142,13 @@ def main():
         'last_set': set(),
         'last_report': 0
     }
+    db = sqlite3.connect('anyonethere.db')
+    db.execute("""CREATE TABLE IF NOT EXISTS [ping] (
+        [reporter] VARCHAR(50),
+        [mac_address] CHAR(50),
+        [ip_address] CHAR(50),
+        [report_time] DATETIME,
+        [rtt] FLOAT);""")
 
     def scan_warp():
         logging.info("scan_warp")
@@ -151,6 +159,8 @@ def main():
             # report(scan_result)
             last_data['last_set'] = new_set
             last_data['last_report'] = time.time()
+        db.executemany('INSERT OR IGNORE INTO ping(reporter, mac_address, ip_address, report_time) VALUES(?,?,?,?)', 'cubieboard', last_data['last_set'], last_data['last_report'])
+        db.commit()
         sch.enter(config['scan_interval'], 1, scan_warp, ())
     logging.info("Let's Enter scan!")
     sch.enter(0, 1, scan_warp, ())
