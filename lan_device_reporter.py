@@ -18,7 +18,7 @@ import logging
 import sys
 
 config = {
-    'ip_range': '192.168.1.2-254',
+    'ip_range': '192.168.8.2-254',
     'report_url': [
         'https://<your_host_here>/anyonethere.php',
     ],
