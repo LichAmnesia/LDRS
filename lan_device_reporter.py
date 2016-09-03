@@ -3,7 +3,7 @@
 # @Author: Comzyh
 # @Date:   2015-06-09 01:00:47
 # @Last Modified by:   Comzyh
-# @Last Modified time: 2016-09-03 17:28:19
+# @Last Modified time: 2016-09-03 17:29:29
 
 import re
 import json
@@ -154,6 +154,7 @@ def main():
         logging.info("scan_warp")
         scan_result = scan(pool, ip_list)
         new_set = set([(ip, mac)for ip, mac, rtt in scan_result])
+        print scan_result
         if (new_set != last_data['last_set'] or
                 time.time() - last_data['last_report'] > config['max_report_interval']):
             # report(scan_result)
